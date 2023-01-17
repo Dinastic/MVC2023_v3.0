@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace MVC2023_v3._0.Models;
 
 public partial class Course
 {
+
     public int IdCourse { get; set; }
 
     public string CourseTitle { get; set; } = null!;

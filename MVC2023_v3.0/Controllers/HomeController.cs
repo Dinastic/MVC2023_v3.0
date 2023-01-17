@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MVC2023_v3._0.Models;
 using System.Diagnostics;
+using System.Linq;
+using System.Runtime.ConstrainedExecution;
 
 namespace MVC2023_v3._0.Controllers
 {
     public class HomeController : Controller
     {
+        MvcDbContext mvcDbContext = new MvcDbContext();
+
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
@@ -22,26 +26,26 @@ namespace MVC2023_v3._0.Controllers
         [HttpPost]
         public IActionResult Index(User user)
         {
-            MvcDbContext mvcDbContext = new MvcDbContext();
-            var status = mvcDbContext.Users.Where(m => m.Username == user.Username && m.Password == user.Password).FirstOrDefault();
-            mvcDbContext.Users.Add(user);
-            if (status == null)
+            bool userExists = mvcDbContext.Users.Any(m => m.Username == user.Username && m.Password == user.Password);
+            User u = mvcDbContext.Users.FirstOrDefault(m => m.Username == user.Username && m.Password == user.Password);
+            
+            if (userExists)
             {
-                ViewBag.LoginStatus = 0;
-            }
-            else
-            {
-                if (user.Role == "Student") {
+                if (u.Role == "Student" ) {
                     return RedirectToAction("Index", "Students");
                 }
-                else if (user.Role == "Professor") {
+                else if (u.Role == "Professor") {
                     return RedirectToAction("Index", "Professors");
                 }
-                else if (user.Role == "Secretary")
+                else if (u.Role == "Secretary")
                 {
                     return RedirectToAction("Index", "Secretaries");
                 }
-               
+            }
+
+            else
+            {
+                ViewBag.LoginStatus = 0;
             }
             return View(user);
         }
