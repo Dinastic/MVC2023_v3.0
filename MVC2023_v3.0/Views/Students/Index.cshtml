@@ -1,0 +1,44 @@
+﻿@model IEnumerable<MVC2023_v3._0.Models.Student>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Surname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Department)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Surname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department)
+            </td>
+            <td>
+                <a asp-action="ShowSingleCourse" asp-route-id="@item.RegistrationNumber">Show grade for a specific course</a> |
+                <a asp-action="ShowSingleSemester" asp-route-id="@item.RegistrationNumber">Show grades for a specific semester</a> |
+                <a asp-action="ShowAllGrades" asp-route-id="@item.RegistrationNumber">Show all grades</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
