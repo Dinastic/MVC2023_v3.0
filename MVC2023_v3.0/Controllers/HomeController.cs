@@ -24,6 +24,7 @@ namespace MVC2023_v3._0.Controllers
         {
             MvcDbContext mvcDbContext = new MvcDbContext();
             var status = mvcDbContext.Users.Where(m => m.Username == user.Username && m.Password == user.Password).FirstOrDefault();
+            mvcDbContext.Users.Add(user);
             if (status == null)
             {
                 ViewBag.LoginStatus = 0;
