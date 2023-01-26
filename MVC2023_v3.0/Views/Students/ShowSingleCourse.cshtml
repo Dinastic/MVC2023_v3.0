@@ -1,0 +1,29 @@
+﻿@model IEnumerable<MVC2023_v3._0.Models.Grades>
+
+@{
+    ViewData["Title"] = "ShowSingleCourse";
+}
+
+<h1>Students</h1>
+<h3>All grades for all courses</h3>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Course
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+                <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseTitle)
+                </td>
+                </tr>
+        }
+    </tbody>
+</table>

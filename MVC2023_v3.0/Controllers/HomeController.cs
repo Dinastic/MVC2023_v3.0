@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MVC2023_v3._0.Models;
 using System.Diagnostics;
 using System.Linq;
@@ -9,7 +10,6 @@ namespace MVC2023_v3._0.Controllers
     public class HomeController : Controller
     {
         MvcDbContext mvcDbContext = new MvcDbContext();
-
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
@@ -23,22 +23,36 @@ namespace MVC2023_v3._0.Controllers
             User user = new User();
             return View(user);
         }
+
         [HttpPost]
         public IActionResult Index(User user)
         {
             bool userExists = mvcDbContext.Users.Any(m => m.Username == user.Username && m.Password == user.Password);
             User u = mvcDbContext.Users.FirstOrDefault(m => m.Username == user.Username && m.Password == user.Password);
-            
+
             if (userExists)
             {
-                if (u.Role == "Student" ) {
+                if (u.Role == "Student" ) 
+                {
+                    Student s = mvcDbContext.Students.FirstOrDefault(y => y.Username == user.Username);
+
+                    TempData["username"] = s.Username;
+                    TempData["name"] = s.Name;
+                    TempData["surname"] = s.Surname;
+                    TempData["department"] = s.Department;
+
                     return RedirectToAction("Index", "Students");
                 }
-                else if (u.Role == "Professor") {
+
+                else if (u.Role == "Professor") 
+                {
+
                     return RedirectToAction("Index", "Professors");
                 }
+
                 else if (u.Role == "Secretary")
                 {
+
                     return RedirectToAction("Index", "Secretaries");
                 }
             }
@@ -49,8 +63,9 @@ namespace MVC2023_v3._0.Controllers
             }
             return View(user);
         }
-        public IActionResult SuccessPage()
+        public ActionResult SuccessPage()
         {
+            
             return View();
         }
 

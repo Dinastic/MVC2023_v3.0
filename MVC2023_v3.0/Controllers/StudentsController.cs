@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Text;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -25,8 +27,9 @@ namespace MVC2023_v3._0.Controllers
             return View(await mvcDbContext.ToListAsync());
         }
 
-        // GET: Students/Details/5
-        public async Task<IActionResult> Details(int? id)
+
+        // GET: Students/ShowAllGrades
+        public async Task<IActionResult> ShowAllGrades(string? id)
         {
             if (id == null || _context.Students == null)
             {
@@ -35,128 +38,33 @@ namespace MVC2023_v3._0.Controllers
 
             var student = await _context.Students
                 .Include(s => s.UsernameNavigation)
-                .FirstOrDefaultAsync(m => m.RegistrationNumber == id);
+                .FirstOrDefaultAsync(m => m.Username == id);
+
             if (student == null)
             {
                 return NotFound();
             }
 
-            return View(student);
-        }
+            List<CourseHasStudent> elements = _context.CourseHasStudents
+                .Where(x => x.RegistrationNumber == student.RegistrationNumber)
+                .ToList();
 
-        // GET: Students/Create
-        public IActionResult Create()
-        {
-            ViewData["Username"] = new SelectList(_context.Users, "Username", "Username");
-            return View();
-        }
+            List<Course> courses = _context.Courses.ToList();
 
-        // POST: Students/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RegistrationNumber,Name,Surname,Department,Username")] Student student)
-        {
-            if (ModelState.IsValid)
+            var grades = from x in elements
+                         join y in courses on x.IdCourse equals y.IdCourse
+                         where x.RegistrationNumber == student.RegistrationNumber
+                         select new Grades
+                         {
+                             CourseTitle = y.CourseTitle,
+                             GradeCourseStudent = x.GradeCourseStudent
+                         };
+            return View(grades);
+            //Debugger
+            /*    foreach (var course in courses)
             {
-                _context.Add(student);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["Username"] = new SelectList(_context.Users, "Username", "Username", student.Username);
-            return View(student);
-        }
-
-        // GET: Students/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Students == null)
-            {
-                return NotFound();
-            }
-
-            var student = await _context.Students.FindAsync(id);
-            if (student == null)
-            {
-                return NotFound();
-            }
-            ViewData["Username"] = new SelectList(_context.Users, "Username", "Username", student.Username);
-            return View(student);
-        }
-
-        // POST: Students/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("RegistrationNumber,Name,Surname,Department,Username")] Student student)
-        {
-            if (id != student.RegistrationNumber)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(student);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StudentExists(student.RegistrationNumber))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["Username"] = new SelectList(_context.Users, "Username", "Username", student.Username);
-            return View(student);
-        }
-
-        // GET: Students/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Students == null)
-            {
-                return NotFound();
-            }
-
-            var student = await _context.Students
-                .Include(s => s.UsernameNavigation)
-                .FirstOrDefaultAsync(m => m.RegistrationNumber == id);
-            if (student == null)
-            {
-                return NotFound();
-            }
-
-            return View(student);
-        }
-
-        // POST: Students/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Students == null)
-            {
-                return Problem("Entity set 'MvcDbContext.Students'  is null.");
-            }
-            var student = await _context.Students.FindAsync(id);
-            if (student != null)
-            {
-                _context.Students.Remove(student);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                System.Diagnostics.Debug.WriteLine(course.CourseTitle);
+            }*/
         }
 
         // GET: Students/ShowSingleCourse/5
@@ -175,7 +83,21 @@ namespace MVC2023_v3._0.Controllers
                 return NotFound();
             }
 
-            return View(student);
+            List<CourseHasStudent> elements = _context.CourseHasStudents
+                .Where(x => x.RegistrationNumber == student.RegistrationNumber)
+                .ToList();
+
+            List<Course> courses = _context.Courses.ToList();
+
+            var coursetitles = from x in elements
+                         join y in courses on x.IdCourse equals y.IdCourse
+                         where x.RegistrationNumber == student.RegistrationNumber
+                         select new Grades
+                         {
+                             CourseTitle = y.CourseTitle
+                         };
+            return View(coursetitles);
+
         }
 
         private bool StudentExists(int id)

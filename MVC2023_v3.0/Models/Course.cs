@@ -11,7 +11,7 @@ public partial class Course
 
     public int IdCourse { get; set; }
 
-    public string CourseTitle { get; set; } = null!;
+    public string CourseTitle { get; set; } = null!;    
 
     public string CourseSemester { get; set; } = null!;
 
