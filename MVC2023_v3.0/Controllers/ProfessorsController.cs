@@ -25,8 +25,52 @@ namespace MVC2023_v3._0.Controllers
             return View(await mvcDbContext.ToListAsync());
         }
 
-        // GET: Professors/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> ShowAllGraded(string? id)
+        {
+            if (id == null || _context.Professors == null)
+            {
+                return NotFound();
+            }
+            
+            var professor = await _context.Professors
+                .Include(p => p.UsernameNavigation)
+                .FirstOrDefaultAsync(m => m.Username == id);
+
+            if (professor == null)
+            {
+                return NotFound();
+            }
+
+            List<Course> courses = _context.Courses
+                .Where(x => x.Afm == professor.Afm)
+                .ToList();
+
+            List<CourseHasStudent> elements = _context.CourseHasStudents
+                .Where(x => x.GradeCourseStudent >= 0)
+                .ToList();
+            
+
+
+            var grades = from x in courses
+                         join y in elements on x.IdCourse equals y.IdCourse 
+                         where x.Afm == professor.Afm
+                         select new Grade
+                         {     
+                             RegistrationNumber = y.RegistrationNumber,
+                             IdCourse= x.IdCourse,
+                             CourseTitle = x.CourseTitle,
+                             GradeCourseStudent = y.GradeCourseStudent
+
+                         };
+            return View(grades);
+            //Debugger
+            /*    foreach (var course in courses)
+            {
+                System.Diagnostics.Debug.WriteLine(course.CourseTitle);
+            }*/
+        }
+
+        public async Task<IActionResult> EditGrade(string? id)
         {
             if (id == null || _context.Professors == null)
             {
@@ -35,37 +79,40 @@ namespace MVC2023_v3._0.Controllers
 
             var professor = await _context.Professors
                 .Include(p => p.UsernameNavigation)
-                .FirstOrDefaultAsync(m => m.Afm == id);
+                .FirstOrDefaultAsync(m => m.Username == id);
+
             if (professor == null)
             {
                 return NotFound();
             }
 
-            return View(professor);
-        }
+            List<Course> courses = _context.Courses
+                .Where(x => x.Afm == professor.Afm)
+                .ToList();
 
-        // GET: Professors/Create
-        public IActionResult Create()
-        {
-            ViewData["Username"] = new SelectList(_context.Users, "Username", "Username");
-            return View();
-        }
+            List<CourseHasStudent> elements = _context.CourseHasStudents
+                .DefaultIfEmpty()
+                .ToList();
 
-        // POST: Professors/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Afm,Name,Surname,Department,Username")] Professor professor)
-        {
-            if (ModelState.IsValid)
+
+
+            var grades = from x in courses
+                         join y in elements on x.IdCourse equals y.IdCourse
+                         where x.Afm == professor.Afm && y.GradeCourseStudent == 0
+                         select new Grade
+                         {
+                             RegistrationNumber = y.RegistrationNumber,
+                             IdCourse = x.IdCourse,
+                             CourseTitle = x.CourseTitle,
+                             GradeCourseStudent = y.GradeCourseStudent
+
+                         };
+            return View(grades);
+            //Debugger
+            /*    foreach (var course in courses)
             {
-                _context.Add(professor);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["Username"] = new SelectList(_context.Users, "Username", "Username", professor.Username);
-            return View(professor);
+                System.Diagnostics.Debug.WriteLine(course.CourseTitle);
+            }*/
         }
 
         // GET: Professors/Edit/5
@@ -121,43 +168,7 @@ namespace MVC2023_v3._0.Controllers
             return View(professor);
         }
 
-        // GET: Professors/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Professors == null)
-            {
-                return NotFound();
-            }
-
-            var professor = await _context.Professors
-                .Include(p => p.UsernameNavigation)
-                .FirstOrDefaultAsync(m => m.Afm == id);
-            if (professor == null)
-            {
-                return NotFound();
-            }
-
-            return View(professor);
-        }
-
-        // POST: Professors/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Professors == null)
-            {
-                return Problem("Entity set 'MvcDbContext.Professors'  is null.");
-            }
-            var professor = await _context.Professors.FindAsync(id);
-            if (professor != null)
-            {
-                _context.Professors.Remove(professor);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        
 
         private bool ProfessorExists(int id)
         {

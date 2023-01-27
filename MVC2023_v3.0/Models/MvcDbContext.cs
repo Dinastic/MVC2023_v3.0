@@ -10,13 +10,14 @@ public partial class MvcDbContext : DbContext
 {
     public MvcDbContext()
     {
+        
     }
 
     public MvcDbContext(DbContextOptions<MvcDbContext> options)
         : base(options)
     {
-    }
 
+    }
     public virtual DbSet<Course> Courses { get; set; }
 
     public virtual DbSet<CourseHasStudent> CourseHasStudents { get; set; }

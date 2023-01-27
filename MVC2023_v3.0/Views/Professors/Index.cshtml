@@ -25,26 +25,20 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
+         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @TempData["name"]
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Surname)
+                @TempData["surname"]
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Department)
+                @TempData["department"]
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UsernameNavigation.Username)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Afm">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Afm">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Afm">Delete</a>
-            </td>
-        </tr>
-}
+            </tr>
     </tbody>
 </table>
+<div>
+    <a asp-action="ShowAllGraded" asp-route-id="@TempData["username"]"> Show all graded courses </a> |
+    <a asp-action="EditGrade" asp-route-id="@TempData["username"]"> Put a grade </a> 
+</div>

@@ -1,0 +1,32 @@
+﻿@model IEnumerable<MVC2023_v3._0.Models.Grade>
+
+@{
+    ViewData["Title"] = "ShowSingleSemester";
+}
+
+<h1>Students</h1>
+<h3>All grades for a specific semester</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Semester
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+                    <tr>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.CourseSemester)
+                    </td>
+                    <td>
+                    <a asp-action="ShowGrade2" asp-route-idsem="@item.CourseSemester" asp-route-idregnum="@item.RegistrationNumber" >Show Grade for this Semester</a>
+                    </td>
+                    </tr>
+        }
+    </tbody>
+</table>

@@ -1,12 +1,11 @@
 ﻿@model IEnumerable<MVC2023_v3._0.Models.Grade>
 
 @{
-    ViewData["Title"] = "ShowAllGrades";
+    ViewData["Title"] = "ShowGrade";
 }
 
 <h1>Students</h1>
-<h3>All grades for all courses</h3>
-
+<h3>All grades for a single course</h3>
 
 <table class="table">
     <thead>
@@ -22,14 +21,14 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CourseTitle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GradeCourseStudent)
-            </td>
-            </tr>
+                <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GradeCourseStudent)
+                </td>
+                </tr>
         }
     </tbody>
 </table>

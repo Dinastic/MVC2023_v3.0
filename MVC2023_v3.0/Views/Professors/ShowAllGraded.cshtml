@@ -1,18 +1,24 @@
 ﻿@model IEnumerable<MVC2023_v3._0.Models.Grade>
 
 @{
-    ViewData["Title"] = "ShowSingleCourse";
+    ViewData["Title"] = "ShowAllGraded";
 }
 
-<h1>Students</h1>
-<h3>All grades for all courses</h3>
+<h1>Professors</h1>
+<h3>All graded</h3>
 
 
 <table class="table">
     <thead>
         <tr>
             <th>
+                Registration Number
+            </th>
+            <th>
                 Course
+            </th>
+            <th>
+                Score
             </th>
         </tr>
     </thead>
@@ -21,10 +27,13 @@
         {
                 <tr>
                 <td>
+                    @Html.DisplayFor(modelItem => item.RegistrationNumber)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.CourseTitle)
                 </td>
                 <td>
-                    <a asp-controller="Students" asp-action="ShowGrade" asp-route-idcourse="@item.IdCourse" asp-route-idregnum="@item.RegistrationNumber" >Show Grade</a>
+                    @Html.DisplayFor(modelItem => item.GradeCourseStudent)
                 </td>
                 </tr>
         }

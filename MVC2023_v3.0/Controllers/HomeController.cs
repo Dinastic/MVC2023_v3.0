@@ -46,6 +46,12 @@ namespace MVC2023_v3._0.Controllers
 
                 else if (u.Role == "Professor") 
                 {
+                    Professor p = mvcDbContext.Professors.FirstOrDefault(y => y.Username == user.Username);
+
+                    TempData["username"] = p.Username;
+                    TempData["name"] = p.Name;
+                    TempData["surname"] = p.Surname;
+                    TempData["department"] = p.Department;
 
                     return RedirectToAction("Index", "Professors");
                 }
