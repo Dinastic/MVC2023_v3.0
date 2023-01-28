@@ -1,21 +1,18 @@
-﻿@model MVC2023_v3._0.Models.Secretary
+﻿@model MVC2023_v3._0.Models.Student
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "CreateStudent";
 }
 
-<h1>Create</h1>
-
-<h4>Secretary</h4>
-<hr />
+<h1>Create new Student</h1>
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-controller="Secretaries" asp-action="CreateNewStudent">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Phonenumber" class="control-label"></label>
-                <input asp-for="Phonenumber" class="form-control" />
-                <span asp-validation-for="Phonenumber" class="text-danger"></span>
+                <label asp-for="RegistrationNumber" class="control-label"></label>
+                <input asp-for="RegistrationNumber" class="form-control" />
+                <span asp-validation-for="RegistrationNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -34,10 +31,15 @@
             </div>
             <div class="form-group">
                 <label asp-for="Username" class="control-label"></label>
-                <select asp-for="Username" class ="form-control" asp-items="ViewBag.Username"></select>
+                <input asp-for="Username" class="form-control" asp-items="ViewBag.Username"></input>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <label class="control-label">Password</label>
+                <input type="password" name="pwd" id="pwd" class="form-control" ></input>
+            </div>
+          
+            <div class="form-group">
+                <input type="submit" value="CreateNewStudent" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -48,5 +50,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

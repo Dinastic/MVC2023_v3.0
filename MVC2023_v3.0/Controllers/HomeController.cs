@@ -58,6 +58,13 @@ namespace MVC2023_v3._0.Controllers
 
                 else if (u.Role == "Secretary")
                 {
+                    Secretary sec = mvcDbContext.Secretaries.FirstOrDefault(y => y.Username == user.Username);
+
+                    TempData["username"] = sec.Username;
+                    TempData["name"] = sec.Name;
+                    TempData["surname"] = sec.Surname;
+                    TempData["department"] = sec.Department;
+                    TempData["phonenumber"] = sec.Phonenumber;
 
                     return RedirectToAction("Index", "Secretaries");
                 }

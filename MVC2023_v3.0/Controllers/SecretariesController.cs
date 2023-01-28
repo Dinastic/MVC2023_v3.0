@@ -25,6 +25,22 @@ namespace MVC2023_v3._0.Controllers
             return View(await mvcDbContext.ToListAsync());
         }
 
+        public async Task<IActionResult> ShowAllCourses(string? id)
+        {
+            List<Professor> professors = _context.Professors.ToList();
+            List<Course> courses = _context.Courses.ToList();
+
+            var grade = from x in professors
+                        join y in courses on x.Afm equals y.Afm
+                        select new ProfessorName
+                        {
+                            CourseTitle = y.CourseTitle,
+                            CourseSemester = y.CourseSemester,
+                            Name = x.Name
+                        };
+            return View(grade);
+        }
+
         // GET: Secretaries/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -44,124 +60,73 @@ namespace MVC2023_v3._0.Controllers
             return View(secretary);
         }
 
-        // GET: Secretaries/Create
-        public IActionResult Create()
+        // GET: Secretaries/CreateStudent
+        public IActionResult CreateStudent()
         {
             ViewData["Username"] = new SelectList(_context.Users, "Username", "Username");
             return View();
         }
 
-        // POST: Secretaries/Create
+        // GET: Secretaries/CreateProfessor
+        public IActionResult CreateProfessor()
+        {
+            ViewData["Username"] = new SelectList(_context.Users, "Username", "Username");
+            return View();
+        }
+
+        // GET: Secretaries/CreateCourse
+        public IActionResult CreateCourse()
+        {
+            ViewData["Username"] = new SelectList(_context.Users, "Username", "Username");
+            return View();
+        }
+
+        // POST: Secretaries/CreateNewStudent
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Phonenumber,Name,Surname,Department,Username")] Secretary secretary)
+        public async Task<IActionResult> CreateNewStudent([Bind("RegistrationNumber,Name,Surname,Department,Username")] Student student,string pwd)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(secretary);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["Username"] = new SelectList(_context.Users, "Username", "Username", secretary.Username);
-            return View(secretary);
+                User user = new User();
+                user.Username = student.Username;
+                user.Role = "Student";
+                user.Password = pwd;
+                _context.Users.Add(user);
+                _context.Students.Add(student);
+                _context.SaveChanges();
+
+            return View(student);
         }
 
-        // GET: Secretaries/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Secretaries == null)
-            {
-                return NotFound();
-            }
-
-            var secretary = await _context.Secretaries.FindAsync(id);
-            if (secretary == null)
-            {
-                return NotFound();
-            }
-            ViewData["Username"] = new SelectList(_context.Users, "Username", "Username", secretary.Username);
-            return View(secretary);
-        }
-
-        // POST: Secretaries/Edit/5
+        // POST: Secretaries/CreateNewProfessor
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Phonenumber,Name,Surname,Department,Username")] Secretary secretary)
+        public async Task<IActionResult> CreateNewProfessor([Bind("Afm,Name,Surname,Department,Username")] Professor professor, string pwd)
         {
-            if (id != secretary.Phonenumber)
-            {
-                return NotFound();
-            }
+            User user = new User();
+            user.Username = professor.Username;
+            user.Role = "Professor";
+            user.Password = pwd;
+            _context.Users.Add(user);
+            _context.Professors.Add(professor);
+            _context.SaveChanges();
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(secretary);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SecretaryExists(secretary.Phonenumber))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["Username"] = new SelectList(_context.Users, "Username", "Username", secretary.Username);
-            return View(secretary);
+            return View(professor);
         }
 
-        // GET: Secretaries/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Secretaries == null)
-            {
-                return NotFound();
-            }
-
-            var secretary = await _context.Secretaries
-                .Include(s => s.UsernameNavigation)
-                .FirstOrDefaultAsync(m => m.Phonenumber == id);
-            if (secretary == null)
-            {
-                return NotFound();
-            }
-
-            return View(secretary);
-        }
-
-        // POST: Secretaries/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: Secretaries/CreateNewCourse
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> CreateNewCourse([Bind("IdCourse,CourseTitle,CourseSemester,Afm")] Course course)
         {
-            if (_context.Secretaries == null)
-            {
-                return Problem("Entity set 'MvcDbContext.Secretaries'  is null.");
-            }
-            var secretary = await _context.Secretaries.FindAsync(id);
-            if (secretary != null)
-            {
-                _context.Secretaries.Remove(secretary);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool SecretaryExists(int id)
-        {
-          return _context.Secretaries.Any(e => e.Phonenumber == id);
+            _context.Courses.Add(course);
+            _context.SaveChanges();
+            return View(course);
         }
     }
 }

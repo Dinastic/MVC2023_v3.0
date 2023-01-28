@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace MVC2023_v3._0.Models;
-
+[Table("Users")]
 public partial class User
 {
     [Key]

@@ -115,6 +115,7 @@ namespace MVC2023_v3._0.Controllers
             }*/
         }
 
+        [HttpPost]
         public async Task<IActionResult> SaveNewGrade(int grade, int regnum, int idcourse)
         {
             List<Course> courses = _context.Courses
@@ -148,15 +149,15 @@ namespace MVC2023_v3._0.Controllers
 
             }*/
 
-            CourseHasStudent f = _context.CourseHasStudents.FirstOrDefault(x => x.IdCourse == idcourse && x.RegistrationNumber == regnum); f.GradeCourseStudent = grade; _context.SaveChanges();
-            
+            CourseHasStudent f = _context.CourseHasStudents.SingleOrDefault(x => x.IdCourse == idcourse && x.RegistrationNumber == regnum);
+            f.GradeCourseStudent = grade; 
+            _context.SaveChanges();
 
-            return RedirectToAction("EditGrade", "Professors");
-            //Debugger
-            /*    foreach (var course in courses)
-            {
-                System.Diagnostics.Debug.WriteLine(course.CourseTitle);
-            }*/
+            System.Diagnostics.Debug.WriteLine(grade);
+            System.Diagnostics.Debug.WriteLine(f.GradeCourseStudent);
+            /*prospathoume na broume to pws na perasoume to value to textbox ston controller giati den pernaei o vathmos tou grade*/
+
+            return View(grades);
         }
 
         // GET: Professors/Edit/5

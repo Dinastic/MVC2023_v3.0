@@ -6,9 +6,6 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -21,33 +18,26 @@
             <th>
                 @Html.DisplayNameFor(model => model.Department)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UsernameNavigation)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @TempData["name"]
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Surname)
+                @TempData["surname"]
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Department)
+                @TempData["department"]
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UsernameNavigation.Username)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Phonenumber">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Phonenumber">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Phonenumber">Delete</a>
-            </td>
-        </tr>
-}
+            </tr>
     </tbody>
 </table>
+<div>
+    <a asp-action="CreateStudent" asp-route-id="@TempData["phonenumber"]">Create new Student</a>|
+    <a asp-action="CreateProfessor" asp-route-id="@TempData["phonenumber"]">Create new Professor</a>|
+    <a asp-action="CreateCourse" asp-route-id="@TempData["phonenumber"]">Create new Course</a>|
+    <a asp-action="ShowAllCourses" asp-route-id="@TempData["username"]">ShowAllCourses</a>
+</div>

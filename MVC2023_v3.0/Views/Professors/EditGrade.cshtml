@@ -23,7 +23,6 @@
         </tr>
     </thead>
     <tbody>
-        <form asp-action="Edit">
         @foreach (var item in Model)
         {
                     <tr>
@@ -34,13 +33,14 @@
                     @Html.DisplayFor(modelItem => item.CourseTitle)
                     </td>
                     <td>
-                    <input type="text" id="grade" name="grade">
+                    @Html.TextBoxFor(modelItem => item.GradeCourseStudent, new {@class ="flat", id = "my-textbox"})
                     </td>
                     <td>
-                    <a asp-action="SaveNewGrade" asp-route-regnum="@item.RegistrationNumber" asp-route-idcourse="@item.IdCourse" >Save new grade</a>
+                    <a asp-action="SaveNewGrade" asp-route-regnum="@item.RegistrationNumber" asp-route-idcourse="@item.IdCourse" asp-route-grade="@item.GradeCourseStudent">Save new grade</a>
                     </td>
                     </tr>
         }
-        </form>
+        @*prospathoume na broume to pws na perasoume to value to textbox ston controller*@
     </tbody>
 </table>
+            
