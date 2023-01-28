@@ -115,6 +115,50 @@ namespace MVC2023_v3._0.Controllers
             }*/
         }
 
+        public async Task<IActionResult> SaveNewGrade(int grade, int regnum, int idcourse)
+        {
+            List<Course> courses = _context.Courses
+                .Where(x => x.IdCourse == idcourse)
+                .ToList();
+
+            List<CourseHasStudent> elements = _context.CourseHasStudents
+                .DefaultIfEmpty()
+                .Where(x => x.RegistrationNumber == regnum && x.IdCourse == idcourse)
+                .ToList();
+
+            var coursehasstudent = _context.CourseHasStudents
+                .Where(x => x.RegistrationNumber == regnum && x.IdCourse == idcourse);
+
+            /*_context.Update(coursehasstudent);
+            await _context.SaveChangesAsync();*/
+
+            var grades = from x in courses
+                         join y in elements on x.IdCourse equals y.IdCourse
+                         where x.IdCourse == y.IdCourse
+                         select new Grade
+                         {
+                             RegistrationNumber = y.RegistrationNumber,
+                             IdCourse = x.IdCourse,
+                             CourseTitle = x.CourseTitle,
+                             GradeCourseStudent = y.GradeCourseStudent
+                         };
+            /*foreach (var result in grades)
+            {
+                result.GradeCourseStudent = grade;
+
+            }*/
+
+            CourseHasStudent f = _context.CourseHasStudents.FirstOrDefault(x => x.IdCourse == idcourse && x.RegistrationNumber == regnum); f.GradeCourseStudent = grade; _context.SaveChanges();
+            
+
+            return RedirectToAction("EditGrade", "Professors");
+            //Debugger
+            /*    foreach (var course in courses)
+            {
+                System.Diagnostics.Debug.WriteLine(course.CourseTitle);
+            }*/
+        }
+
         // GET: Professors/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

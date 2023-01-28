@@ -23,6 +23,7 @@
         </tr>
     </thead>
     <tbody>
+        <form asp-action="Edit">
         @foreach (var item in Model)
         {
                     <tr>
@@ -33,9 +34,13 @@
                     @Html.DisplayFor(modelItem => item.CourseTitle)
                     </td>
                     <td>
-                    @Html.DisplayFor(modelItem => item.GradeCourseStudent )
+                    <input type="text" id="grade" name="grade">
+                    </td>
+                    <td>
+                    <a asp-action="SaveNewGrade" asp-route-regnum="@item.RegistrationNumber" asp-route-idcourse="@item.IdCourse" >Save new grade</a>
                     </td>
                     </tr>
         }
+        </form>
     </tbody>
 </table>
