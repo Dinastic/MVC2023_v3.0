@@ -94,8 +94,6 @@ namespace MVC2023_v3._0.Controllers
                 .DefaultIfEmpty()
                 .ToList();
 
-
-
             var grades = from x in courses
                          join y in elements on x.IdCourse equals y.IdCourse
                          where x.Afm == professor.Afm && y.GradeCourseStudent == 0
@@ -105,8 +103,8 @@ namespace MVC2023_v3._0.Controllers
                              IdCourse = x.IdCourse,
                              CourseTitle = x.CourseTitle,
                              GradeCourseStudent = y.GradeCourseStudent
-
                          };
+
             return View(grades);
             //Debugger
             /*    foreach (var course in courses)
@@ -115,7 +113,6 @@ namespace MVC2023_v3._0.Controllers
             }*/
         }
 
-        [HttpPost]
         public async Task<IActionResult> SaveNewGrade(int grade, int regnum, int idcourse)
         {
             List<Course> courses = _context.Courses
@@ -127,11 +124,14 @@ namespace MVC2023_v3._0.Controllers
                 .Where(x => x.RegistrationNumber == regnum && x.IdCourse == idcourse)
                 .ToList();
 
-            var coursehasstudent = _context.CourseHasStudents
-                .Where(x => x.RegistrationNumber == regnum && x.IdCourse == idcourse);
+            CourseHasStudent coursehasstudent = _context.CourseHasStudents
+                .Where(x => x.RegistrationNumber == regnum && x.IdCourse == idcourse)
+                .SingleOrDefault();
 
-            /*_context.Update(coursehasstudent);
-            await _context.SaveChangesAsync();*/
+            coursehasstudent.GradeCourseStudent = grade;
+
+            _context.Update(coursehasstudent);
+            _context.SaveChanges();
 
             var grades = from x in courses
                          join y in elements on x.IdCourse equals y.IdCourse
@@ -141,23 +141,21 @@ namespace MVC2023_v3._0.Controllers
                              RegistrationNumber = y.RegistrationNumber,
                              IdCourse = x.IdCourse,
                              CourseTitle = x.CourseTitle,
-                             GradeCourseStudent = y.GradeCourseStudent
+                             GradeCourseStudent = grade
                          };
+
+
             /*foreach (var result in grades)
             {
                 result.GradeCourseStudent = grade;
 
             }*/
 
-            CourseHasStudent f = _context.CourseHasStudents.SingleOrDefault(x => x.IdCourse == idcourse && x.RegistrationNumber == regnum);
+            /*CourseHasStudent f = _context.CourseHasStudents.SingleOrDefault(x => x.IdCourse == idcourse && x.RegistrationNumber == regnum);
             f.GradeCourseStudent = grade; 
-            _context.SaveChanges();
-
-            System.Diagnostics.Debug.WriteLine(grade);
-            System.Diagnostics.Debug.WriteLine(f.GradeCourseStudent);
-            /*prospathoume na broume to pws na perasoume to value to textbox ston controller giati den pernaei o vathmos tou grade*/
-
-            return View(grades);
+            _context.SaveChanges();*/
+                                    
+            return View(coursehasstudent);
         }
 
         // GET: Professors/Edit/5

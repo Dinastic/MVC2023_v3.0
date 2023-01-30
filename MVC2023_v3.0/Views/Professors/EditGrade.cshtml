@@ -23,9 +23,11 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @using (Html.BeginForm("SaveNewGrade", "Professors"))
         {
-                    <tr>
+            @foreach (var item in Model)
+            {
+                <tr>
                     <td>
                     @Html.DisplayFor(modelItem => item.RegistrationNumber)
                     </td>
@@ -33,14 +35,16 @@
                     @Html.DisplayFor(modelItem => item.CourseTitle)
                     </td>
                     <td>
-                    @Html.TextBoxFor(modelItem => item.GradeCourseStudent, new {@class ="flat", id = "my-textbox"})
+                    <input type="text" name="grade" />
                     </td>
                     <td>
-                    <a asp-action="SaveNewGrade" asp-route-regnum="@item.RegistrationNumber" asp-route-idcourse="@item.IdCourse" asp-route-grade="@item.GradeCourseStudent">Save new grade</a>
+                    <input type="hidden" name="regnum" value="@item.RegistrationNumber"/>
+                    <input type="hidden" name="idcourse" value="@item.IdCourse"/>
+                    <input type="submit" action="SaveNewGrade" value="Save"/>
                     </td>
                     </tr>
         }
-        @*prospathoume na broume to pws na perasoume to value to textbox ston controller*@
+        } 
     </tbody>
 </table>
             

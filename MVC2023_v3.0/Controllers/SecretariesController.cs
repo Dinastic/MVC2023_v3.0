@@ -41,25 +41,6 @@ namespace MVC2023_v3._0.Controllers
             return View(grade);
         }
 
-        // GET: Secretaries/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Secretaries == null)
-            {
-                return NotFound();
-            }
-
-            var secretary = await _context.Secretaries
-                .Include(s => s.UsernameNavigation)
-                .FirstOrDefaultAsync(m => m.Phonenumber == id);
-            if (secretary == null)
-            {
-                return NotFound();
-            }
-
-            return View(secretary);
-        }
-
         // GET: Secretaries/CreateStudent
         public IActionResult CreateStudent()
         {
@@ -127,6 +108,33 @@ namespace MVC2023_v3._0.Controllers
             _context.Courses.Add(course);
             _context.SaveChanges();
             return View(course);
+        }
+
+        public IActionResult SetCourseStudent()
+        {
+            ViewData["Username"] = new SelectList(_context.Users, "Username", "Username");
+            return View();
+        }
+
+        // POST: Secretaries/CreateNewCourse
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Setchs([Bind("RegistrationNumber,IdCourse")] CourseHasStudent chs)
+        {
+            var c = _context.CourseHasStudents
+                             .OrderByDescending(x => x.IdPk)
+                             .Take(1)
+                             .Select(x => x.IdPk)
+                             .ToList()
+                             .FirstOrDefault();
+            chs.GradeCourseStudent = 0;
+            chs.IdPk = c + 1;
+
+            _context.CourseHasStudents.Add(chs);
+            _context.SaveChanges();
+            return View(chs);
         }
     }
 }
